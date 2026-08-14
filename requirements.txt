@@ -1,0 +1,6 @@
+# web app:
+flask
+pandas
+plotly
+pytest
+python-dotenv
