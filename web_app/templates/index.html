@@ -79,6 +79,11 @@
         Total today: {{ total }} mg of {{ limit }} mg &mdash; {{ status }}
     </div>
 
+    <!-- Plotly gauge chart showing the total against the limit -->
+    <div class="gauge">
+        {{ gauge|safe }}
+    </div>
+
     <!-- The day's log -->
     {% if daily_log %}
         <h2>What you've had today</h2>
