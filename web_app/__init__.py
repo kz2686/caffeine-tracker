@@ -12,6 +12,7 @@ from app.caffeine_tracker import (
     total_caffeine,
     caffeine_status,
     drink_label,
+    make_gauge_html,
 )
 
 # The daily caffeine limit for pregnancy (mg). Used to judge the running total.
@@ -31,9 +32,10 @@ def create_app():
 
     @app.route("/")
     def home():
-        """Show the drink picker, the day's log, and the running total."""
+        """Show the drink picker, the day's log, the running total, and a gauge."""
         total = total_caffeine(daily_log)
         status = caffeine_status(total, DAILY_LIMIT)
+        gauge = make_gauge_html(total, DAILY_LIMIT)
         return render_template(
             "index.html",
             drinks=drinks,
@@ -42,6 +44,7 @@ def create_app():
             total=total,
             status=status,
             limit=DAILY_LIMIT,
+            gauge=gauge,
         )
 
     @app.route("/add", methods=["POST"])
@@ -67,4 +70,3 @@ def create_app():
 if __name__ == "__main__":
     my_app = create_app()
     my_app.run(debug=True)
-
