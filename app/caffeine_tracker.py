@@ -88,3 +88,16 @@ def caffeine_status(total, limit=200):
         return "approaching limit"
     else:
         return "under limit"
+
+
+def drink_label(drink):
+    """
+    Build a human-readable label for a drink, used in the dropdown menu.
+
+    Params:
+        drink (dict): a drink with "beverage", "prep", and "caffeine" keys.
+
+    Returns:
+        str: e.g. "Brewed Coffee - Venti (410 mg)".
+    """
+    return f"{drink['beverage']} - {drink['prep']} ({drink['caffeine']} mg)"

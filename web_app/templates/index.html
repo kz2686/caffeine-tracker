@@ -1,13 +1,102 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caffeine Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+            color: #333;
+        }
+        h1 { color: #00704A; }  /* Starbucks green */
+        .picker {
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        select, button {
+            font-size: 16px;
+            padding: 8px;
+            margin-top: 8px;
+        }
+        button {
+            background: #00704A;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 8px 16px;
+        }
+        button:hover { background: #005c3d; }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .under { background: #d4edda; color: #155724; }
+        .approaching { background: #fff3cd; color: #856404; }
+        .over { background: #f8d7da; color: #721c24; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+        .reset-btn { background: #999; }
+        .reset-btn:hover { background: #777; }
+    </style>
 </head>
 <body>
     <h1>Caffeine Tracker</h1>
-    <p>Track your daily caffeine intake from Starbucks drinks.</p>
-    <p>Coming soon...</p>
+    <p>Track your daily caffeine intake from Starbucks drinks. The recommended
+       daily limit during pregnancy is {{ limit }} mg.</p>
+
+    <div class="picker">
+        <form action="/add" method="post">
+            <label for="drink_index">Choose a drink:</label><br>
+            <select name="drink_index" id="drink_index">
+                {% for drink in drinks %}
+                    <option value="{{ loop.index0 }}">{{ drink_label(drink) }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Add to my day</button>
+        </form>
+    </div>
+
+    <!-- Running total and safety status -->
+    {% if status == "under limit" %}
+        {% set status_class = "under" %}
+    {% elif status == "approaching limit" %}
+        {% set status_class = "approaching" %}
+    {% else %}
+        {% set status_class = "over" %}
+    {% endif %}
+
+    <div class="status {{ status_class }}">
+        Total today: {{ total }} mg of {{ limit }} mg &mdash; {{ status }}
+    </div>
+
+    <!-- The day's log -->
+    {% if daily_log %}
+        <h2>What you've had today</h2>
+        <table>
+            <tr><th>Drink</th><th>Size</th><th>Caffeine</th></tr>
+            {% for drink in daily_log %}
+                <tr>
+                    <td>{{ drink.beverage }}</td>
+                    <td>{{ drink.prep }}</td>
+                    <td>{{ drink.caffeine }} mg</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <form action="/reset" method="post" style="margin-top: 15px;">
+            <button type="submit" class="reset-btn">Start a new day</button>
+        </form>
+    {% else %}
+        <p>No drinks logged yet. Choose one above to get started.</p>
+    {% endif %}
 </body>
 </html>
